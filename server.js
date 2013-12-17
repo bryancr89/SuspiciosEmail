@@ -93,7 +93,7 @@ function initializeMailMonitor(options) {
             var percentage = percentageMatchesKeywords(mail);
             if(percentage > options.criteriaPercentage){
                 console.log("This email match " + percentage + '% with the criteria.');
-                sendNotification(options, percentage);
+                sendNotification(options, percentage, mail.subject, mail.text);
             }
             console.log("This email match just " + percentage + '% with the criteria.');
         }
@@ -111,8 +111,8 @@ function percentageMatchesKeywords(data) {
     return countMatches * 100 / (keywords.length !== 0 ? keywords.length : 1);
 }
 
-function sendNotification(options, percetange){
-    // TODO: Send an email when the email contain more than the percetange defined.
+function sendNotification(options, percentage, subject, message){
+    // TODO: Send an email when the email contain more than the percentage defined.
     var smtpTransport = nodemailer.createTransport("SMTP",{
         auth: {
             user: options.sendUsername,
@@ -122,9 +122,14 @@ function sendNotification(options, percetange){
     var mailOptions = {
         from: options.sendUsername,
         to: options.sendTo,
-        subject: "Hello ✔", // Subject line
-        text: "Hello world ✔", // plaintext body
-        html: "<b>Hello world ✔</b>" // html body
+        subject: "Suspicious Email", // Subject line
+        text: "Hello!!! This email has been forwarded to you because it  has reached the permitted percentage(" + percentage +") of  suspicious words inside it."+ 
+				"Following you can see the subject and the message of the received email: " + 
+				"Subject: "+ subject + 
+				"Message: " + message,  // plaintext body
+        html: "<p>Hello!!!</p>"+
+				"<p>This email has been forwarded to you because it  has reached the permitted percentage(" + percentage +") of  suspicious words inside it. Following you can see the subject and the message of the received email: </p>" +
+				"<p>Subject: "+ subject + "<BR> Message: "+ message +"</p>"// html body
     };
 
     smtpTransport.sendMail(mailOptions, function(error, response){
