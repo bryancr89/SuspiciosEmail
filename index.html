@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="/jquery-1.10.2.min.js"></script>
+		<script src="/app.js"></script>
+		<link href="/style.css" type="text/css" rel="stylesheet">
+		<title>Suspicious Email Detector</title>
+	</head>
+	<body>
+		<form id="settings">
+			<h2>Suspicious Email Detector</h2>
+		    <fieldset>
+		    	<legend>Get Mail configuration</legend>
+		    	<table>
+			    	<tr>
+			    		<td>
+			    			Host:
+			    		</td>
+			    		<td>
+			    			<input name="getHost" type="text" placeholder="imap.gmail.com"/>
+			    		</td>
+			    	</tr>
+			    	<tr>
+			    		<td>
+			    			Port:
+			    		</td>
+			    		<td>
+			    			<input name="getPort" type="text" placeholder="993"/>
+			    		</td>
+			    	</tr>
+			    	<tr>
+			    		<td>
+			    			Username:
+			    		</td>
+			    		<td>
+			    			<input name="getUsername" type="text"/>
+			    		</td>
+			    	</tr>
+			    	<tr>
+			    		<td>
+			    			Password:
+			    		</td>
+			    		<td>
+			    			<input name="getPassword" type="password"/>
+			    		</td>
+			    	</tr>
+			    </table>
+		    </fieldset>
+		    <fieldset>
+		    	<legend>Criteria</legend>
+		    	<table>
+			    	<tr>
+			    		<td>
+			    			Words:
+			    		</td>
+			    		<td>
+			    			<textarea name="criteriaWords" type="text" placeholder="drugs, drug, money, ..."></textarea>
+			    		</td>
+			    	</tr>
+			    	<tr>
+			    		<td>
+			    			Percentage:
+			    		</td>
+			    		<td>
+			    			<input name="criteriaPercentage" type="number" max="100" min="0"/>
+			    		</td>
+			    	</tr>
+			    </table>
+		    </fieldset>
+		    <fieldset>
+		    	<legend>Send Mail configuration</legend>
+		    	<table>
+		    		<tr>
+			    		<td>
+			    			Host:
+			    		</td>
+			    		<td>
+			    			<input name="sendHost" type="text" placeholder="smtp.gmail.com"/>
+			    		</td>
+			    	</tr>
+			    	<tr>
+			    		<td>
+			    			Port:
+			    		</td>
+			    		<td>
+			    			<input name="sendPort" type="text" placeholder="993"/>
+			    		</td>
+			    	</tr>
+			    	<tr>
+			    		<td>
+			    			Username:
+			    		</td>
+			    		<td>
+			    			<input name="sendUsername" type="text"/>
+			    		</td>
+			    	</tr>
+			    	<tr>
+			    		<td>
+			    			Password:
+			    		</td>
+			    		<td>
+			    			<input name="sendPassword" type="password"/>
+			    		</td>
+			    	</tr>
+			    	<tr>
+			    		<td>
+			    			To:
+			    		</td>
+			    		<td>
+			    			<input name="sendTo" type="text" placeholder="example@mail.com"/>
+			    		</td>
+			    	</tr>
+			    </table>
+		    </fieldset>
+		    <button id="submit">Submit</button>
+		</form>
+	</body>
+</html>
