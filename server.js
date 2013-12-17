@@ -91,11 +91,13 @@ function initializeMailMonitor(options) {
             console.log("Received new email");
             parsedMails.push(mail.messageId);
             var percentage = percentageMatchesKeywords(mail);
-            if(percentage > options.criteriaPercentage){
+            if(percentage >= options.criteriaPercentage) {
                 console.log("This email match " + percentage + '% with the criteria.');
                 sendNotification(options, percentage, mail.subject, mail.text);
             }
-            console.log("This email match just " + percentage + '% with the criteria.');
+            else{
+                console.log("This email match just " + percentage + '% with the criteria.');
+            }
         }
     });
 }
@@ -103,8 +105,8 @@ function initializeMailMonitor(options) {
 function percentageMatchesKeywords(data) {
     var countMatches = 0;
     keywords.forEach(function(element, index){
-        var regex = new RegExp(element.trim(), 'g');
-        if(data.text.match(regex) || data.subject.match(regex)){
+        var regex = new RegExp(element.trim(), 'gi');
+        if((data.html && data.html.match(regex)) || (data.text && data.text.match(regex)) || (data.subject && data.subject.match(regex))){
             countMatches++;
         }
     });
@@ -132,10 +134,11 @@ function sendNotification(options, percentage, subject, message){
 				"<p>Subject: "+ subject + "<BR> Message: "+ message +"</p>"// html body
     };
 
-    smtpTransport.sendMail(mailOptions, function(error, response){
-        if(error){
+    smtpTransport.sendMail(mailOptions, function(error, response) {
+        if(error) {
             console.log(error);
-        }else{
+        }
+        else {
             console.log("Sent the message.");
         }
         smtpTransport.close(); 
