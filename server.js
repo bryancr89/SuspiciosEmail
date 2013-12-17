@@ -8,6 +8,7 @@ var fs = require("fs"),
 
 var mailListener,
     keywords = [],
+    parsedMails = [],
     SPLIT_KEYWORDS = ',',
     mimeTypes = {
         'html': 'text/html', 
@@ -86,20 +87,23 @@ function initializeMailMonitor(options) {
 
     mailListener.on("mail", function(mail) {
         // do something with mail object including attachments
-        console.log("Received new email");
-        var percentage = percentageMatchesKeywords(mail);
-        if(percentage > options.criteriaPercentage){
-            console.log("This email match " + percentage + '% with the criteria.');
-            sendNotification(options);
+        if(parsedMails.indexOf(mail.messageId) === -1) {
+            console.log("Received new email");
+            parsedMails.push(mail.messageId);
+            var percentage = percentageMatchesKeywords(mail);
+            if(percentage > options.criteriaPercentage){
+                console.log("This email match " + percentage + '% with the criteria.');
+                sendNotification(options, percentage);
+            }
+            console.log("This email match just " + percentage + '% with the criteria.');
         }
-        console.log("This email match just " + percentage + '% with the criteria.');
     });
 }
 
 function percentageMatchesKeywords(data) {
     var countMatches = 0;
     keywords.forEach(function(element, index){
-        var regex = new RegExp(element, 'g');
+        var regex = new RegExp(element.trim(), 'g');
         if(data.text.match(regex) || data.subject.match(regex)){
             countMatches++;
         }
@@ -107,7 +111,7 @@ function percentageMatchesKeywords(data) {
     return countMatches * 100 / (keywords.length !== 0 ? keywords.length : 1);
 }
 
-function sendNotification(options){
+function sendNotification(options, percetange){
     // TODO: Send an email when the email contain more than the percetange defined.
     var smtpTransport = nodemailer.createTransport("SMTP",{
         auth: {
