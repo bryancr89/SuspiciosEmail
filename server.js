@@ -125,12 +125,12 @@ function sendNotification(options, percentage, subject, message){
         from: options.sendUsername,
         to: options.sendTo,
         subject: "Suspicious Email", // Subject line
-        text: "Hello!!! This email has been forwarded to you because it  has reached the permitted percentage(" + percentage +") of  suspicious words inside it."+ 
+        text: "Hello!!! This email has been forwarded to you because it has reached "+ percentage +"% of  suspicious words inside it; and the permitted percentage is " + options.criteriaPercentage +"%."+ 
 				"Following you can see the subject and the message of the received email: " + 
 				"Subject: "+ subject + 
 				"Message: " + message,  // plaintext body
         html: "<p>Hello!!!</p>"+
-				"<p>This email has been forwarded to you because it  has reached the permitted percentage(" + percentage +") of  suspicious words inside it. Following you can see the subject and the message of the received email: </p>" +
+				"<p>This email has been forwarded to you because it has reached "+ percentage +"% of  suspicious words inside it; and the permitted percentage is " + options.criteriaPercentage +"%. Following you can see the subject and the message of the received email: </p>" +
 				"<p>Subject: "+ subject + "<BR> Message: "+ message +"</p>"// html body
     };
 
