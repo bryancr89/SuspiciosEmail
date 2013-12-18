@@ -3,9 +3,17 @@ $(document).ready(function(){
 		var data = $('#settings').serialize();
 		$.ajax({
 			url: 'submit', 
-			type: 'POST', 
-			dataType: 'json',
-            data: data
+			type: 'POST', 			
+            data: data,
+			success: function(msg) {				
+				$('#configMessage').html(msg);
+				setTimeout(function(){
+					$('#configMessage').html("");
+				},3000);				
+			},
+			error: function(){
+				$('#configMessage').html("Error saving configuration!!!");
+			}
 	    });
 	});
 

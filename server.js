@@ -20,7 +20,7 @@ var mailListener,
 function processRequest(request, response) {
     var uri = url.parse(request.url).pathname;
     if (uri === '/submit') {
-        defineSettings(request, response);
+        defineSettings(request, response);					
     } else if (uri === '/') {
         if(mailListener){
             mailListener.stop();
@@ -63,11 +63,12 @@ function defineSettings(request, response) {
     request.addListener('end', function () {
         var json = qs.parse(postData);
         keywords = json.criteriaWords.split(SPLIT_KEYWORDS);
-        initializeMailMonitor(json);
+		
+		initializeMailMonitor(response, json);		
     });
 }
 
-function initializeMailMonitor(options) {
+function initializeMailMonitor(response, options) {
     mailListener = new MailListener({
         username: options.getUsername,
         password: options.getPassword,
@@ -79,8 +80,8 @@ function initializeMailMonitor(options) {
         fetchUnreadOnStart: true // use it only if you want to get all unread email on lib start. Default is `false`
     });
 
-    mailListener.start();
-
+	mailListener.start();
+	
     mailListener.on("server:connected", function() {
         console.log("imapConnected");
     });
@@ -100,6 +101,11 @@ function initializeMailMonitor(options) {
             }
         }
     });
+	
+	mailListener.on("error", function(err){
+		response.write("Error Saving Configuration!!");
+		response.end();
+	});
 }
 
 function percentageMatchesKeywords(data) {
@@ -130,7 +136,7 @@ function sendNotification(options, percentage, subject, message){
 				"Subject: "+ subject + 
 				"Message: " + message,  // plaintext body
         html: "<p>Hello!!!</p>"+
-				"<p>This email has been forwarded to you because it has reached "+ percentage +"% of  suspicious words inside it; and the permitted percentage is " + options.criteriaPercentage +"%. Following you can see the subject and the message of the received email: </p>" +
+				"<p>This email has been forwarded to you because it has reached "+ percentage.toFixed(2) +"% of  suspicious words inside it; and the permitted percentage is " + options.criteriaPercentage +"%. Following you can see the subject and the message of the received email: </p>" +
 				"<p>Subject: "+ subject + "<BR> Message: "+ message +"</p>"// html body
     };
 
