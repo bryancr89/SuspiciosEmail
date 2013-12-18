@@ -80,10 +80,10 @@ function initializeMailMonitor(response, options) {
         fetchUnreadOnStart: true // use it only if you want to get all unread email on lib start. Default is `false`
     });
 
-	mailListener.start();
+	mailListener.start();	
 	
     mailListener.on("server:connected", function() {
-        console.log("imapConnected");
+		console.log("imapConnected");		       
     });
 
     mailListener.on("mail", function(mail) {
@@ -94,7 +94,7 @@ function initializeMailMonitor(response, options) {
             var percentage = percentageMatchesKeywords(mail);
             if(percentage >= options.criteriaPercentage) {
                 console.log("This email match " + percentage + '% with the criteria.');
-                sendNotification(options, percentage, mail.subject, mail.text);
+                sendNotification(response, options, percentage, mail.subject, mail.text);
             }
             else{
                 console.log("This email match just " + percentage + '% with the criteria.');
@@ -103,7 +103,7 @@ function initializeMailMonitor(response, options) {
     });
 	
 	mailListener.on("error", function(err){
-		response.write("Error Saving Configuration!!");
+		response.write("Error getting emails, please check the credentials");
 		response.end();
 	});
 }
@@ -119,7 +119,7 @@ function percentageMatchesKeywords(data) {
     return countMatches * 100 / (keywords.length !== 0 ? keywords.length : 1);
 }
 
-function sendNotification(options, percentage, subject, message){
+function sendNotification(responseParent, options, percentage, subject, message){
     // TODO: Send an email when the email contain more than the percentage defined.
     var smtpTransport = nodemailer.createTransport("SMTP",{
         auth: {
@@ -142,8 +142,9 @@ function sendNotification(options, percentage, subject, message){
 
     smtpTransport.sendMail(mailOptions, function(error, response) {
         if(error) {
-            console.log(error);
-        }
+            responseParent.write("Error sending notification, please check the credentials");
+			responseParent.end();
+		}
         else {
             console.log("Sent the message.");
         }
